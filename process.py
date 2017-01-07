@@ -56,6 +56,7 @@ def return_full_url(url, sub=False):
 			'ignoreerrors': True,
 			'format': 'mp4[height<=480]/best[height<=480]'}
 	else:
+		logger.debug('CASTING: Getting best format <= 480p')
 		ydl_options = {
 			'logger': logger, 
 			'noplaylist': True, 
@@ -75,6 +76,7 @@ def return_full_url(url, sub=False):
 	    video = result #Just a video
 
 	#with the format option set above, we should have to worry about parsing for a specific format, it should already pull the right one.
+	logger.debug("Selected format: " + video['resolution'] + " " + video['ext'])
 	return video['url']
 
 def playlist(url, cast_now):

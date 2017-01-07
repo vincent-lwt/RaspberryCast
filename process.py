@@ -46,12 +46,21 @@ def return_full_url(url, sub=False):
 	if (url[-4:] in (".avi", ".mkv", ".mp4", ".mp3")) or (sub) or (".googlevideo.com/" in url):	
 		logger.debug('Direct video URL, no need to use youtube-dl.')
 		return url
-
-	ydl_options = {
-		'logger': logger, 
-		'noplaylist': True, 
-		'ignoreerrors': True,
-		'format': 'best[ext=mp4]/best'}
+	
+	slow = config["slow_mode"]
+	if slow:
+		logger.debug('CASTING: Slow mode detected, getting best format <= 480p')
+		ydl_options = {
+			'logger': logger, 
+			'noplaylist': True, 
+			'ignoreerrors': True,
+			'format': 'mp4[height<=480]/best[height<=480]'}
+	else:
+		ydl_options = {
+			'logger': logger, 
+			'noplaylist': True, 
+			'ignoreerrors': True,
+			'format': 'mp4/best'}
 	ydl = youtube_dl.YoutubeDL(ydl_options) # Ignore errors in case of error in long playlists
 	with ydl: #Downloading youtub-dl infos
 	    result = ydl.extract_info(url, download=False) #We just want to extract the info
@@ -65,29 +74,8 @@ def return_full_url(url, sub=False):
 	else:
 	    video = result #Just a video
 
-	slow = config["slow_mode"]
-
-	if "youtu" in url:
-		if slow:
-			for i in video['formats']:
-				if i['format_id'] == "18":
-					logger.debug("Youtube link detected, extracting url in 360p")
-					return i['url']
-		else:
-			logger.debug('CASTING: Youtube link detected, extracting url in maximal quality.')
-			return video['url']
-	elif "vimeo" in url:
-		if slow:
-			for i in video['formats']:
-				if i['format_id'] == "http-360p":
-					logger.debug("Vimeo link detected, extracting url in 360p")
-					return i['url']
-		else:
-			logger.debug('Vimeo link detected, extracting url in maximal quality.')
-			return video['url']
-	else :
-		logger.debug('Video not from Youtube or Vimeo. Extracting url in maximal quality.')
-		return video['url']
+	#with the format option set above, we should have to worry about parsing for a specific format, it should already pull the right one.
+	return video['url']
 
 def playlist(url, cast_now):
 	logger.info("Processing playlist.")

@@ -47,11 +47,18 @@ def return_full_url(url, sub=False):
 		logger.debug('Direct video URL, no need to use youtube-dl.')
 		return url
 
-	ydl_options = {
-		'logger': logger, 
-		'noplaylist': True, 
-		'ignoreerrors': True,
-		'format': 'best[ext=mp4]/best'}
+	if slow:
+		ydl_options = {
+			'logger': logger, 
+			'noplaylist': True, 
+			'ignoreerrors': True,
+			'format': 'mp4[height<=480]/best[height<=480]'}
+	else:
+		ydl_options = {
+			'logger': logger, 
+			'noplaylist': True, 
+			'ignoreerrors': True,
+			'format': 'mp4/best'}
 	ydl = youtube_dl.YoutubeDL(ydl_options) # Ignore errors in case of error in long playlists
 	with ydl: #Downloading youtub-dl infos
 	    result = ydl.extract_info(url, download=False) #We just want to extract the info

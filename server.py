@@ -59,7 +59,8 @@ def stream():
 			config["slow_mode"] = False
 		with open('raspberrycast.conf', 'w') as f:
 			json.dump(config, f)
-
+		
+		logger.info("Slow mode changed to: " + config["slow_mode"])
 	try:
 		if ('localhost' in url) or ('127.0.0.1' in url):
 			ip = request.environ['REMOTE_ADDR']
@@ -172,4 +173,4 @@ def webstate():
 	logger.debug("Running state as been asked : "+currentState)
 	return currentState
 		
-run(app, reloader=False, host='0.0.0.0', debug=True, quiet=True, port=2020)
+run(app, reloader=False, host='192.168.1.27', debug=True, quiet=True, port=2020)

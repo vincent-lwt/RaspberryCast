@@ -15,8 +15,19 @@ if [ $1 = "start" ]; then
 	fi
 	echo "Checking for updates."
 	git pull
-	echo "Starting RaspberryCast server."
-	./server.py &
+	# This block checks dependencies in Python3, and if that fails in
+	# Python2.
+	# TODO: Transition existing installations to Python3?
+	if python3 -c "import bottle, youtube_dl" 2>/dev/null; then
+		echo "Starting RaspberryCast server on Python3."
+		python3 server.py &
+	elif python2 -c "import bottle, youtube_dl" 2>/dev/null; then
+		echo "Starting RaspberryCast server on Python2."
+		python2 server.py &
+	else
+		echo "Missing dependencies, read README.md for installation instructions." >&2
+		exit 1
+	fi
 	echo "Done."
 	exit
 elif [ $1 = "stop" ] ; then

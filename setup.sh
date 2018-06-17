@@ -39,20 +39,12 @@ echo "Installing necessary dependencies... (This could take a while)"
 echo ""
 echo "============================================================"
 
-apt-get install -y lsof python-pip git wget omxplayer libnss-mdns fbi
+apt-get install -y lsof git wget omxplayer libnss-mdns fbi python3 python3-bottle youtube-dl
 echo "============================================================"
 
 if [ "$?" = "1" ]
 then
   echo "An unexpected error occured during apt-get!"
-  exit 0
-fi
-
-pip install youtube-dl bottle livestreamer
-
-if [ "$?" = "1" ]
-then
-  echo "An unexpected error occured durin pip install!"
   exit 0
 fi
 

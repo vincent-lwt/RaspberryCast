@@ -3,6 +3,8 @@ import os
 import threading
 import logging
 import json
+import random
+import string
 logger = logging.getLogger("RaspberryCast")
 volume = 0
 
@@ -86,14 +88,21 @@ def return_full_url(url, sub=False, slow_mode=False):
         else:
             logger.debug('''CASTING: Youtube link detected.
 Extracting url in maximal quality.''')
-            for fid in ('22', '18', '36', '17'):
-                for i in video['formats']:
-                    if i['format_id'] == fid:
-                        logger.debug(
-                            'CASTING: Playing highest video quality ' +
-                            i['format_note'] + '(' + fid + ').'
-                        )
-                        return i['url']
+            vidId = ''.join(random.choice(
+                string.ascii_uppercase + string.digits) for _ in range(6)
+            )
+            ydl = youtube_dl.YoutubeDL(
+                {
+                    'logger': logger,
+                    'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best',
+                    'ignoreerrors': True,
+                    'merge_output_format': 'mp4',
+                    'outtmpl': '/tmp/' + vidId + '.mp4'
+                }
+            )
+            with ydl:  # Downloading youtub-dl video
+                result = ydl.download([url])
+            return "/tmp/" + vidId + ".mp4"
     elif "vimeo" in url:
         if slow_mode:
             for i in video['formats']:
@@ -163,6 +172,9 @@ def playWithOMX(url, sub, width="", height="", new_log=False):
             "omxplayer -b -r -o both '" + url + "' " + resolution + " --vol " +
             str(volume) + " < /tmp/cmd"
         )
+    if "/tmp/" in url:
+        if os.path.exists(url):
+            os.remove(url)
 
     if getState() != "2":  # In case we are again in the launchvideo function
         setState("0")

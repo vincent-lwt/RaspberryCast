@@ -101,6 +101,12 @@ Extracting url in maximal quality.''')
         hotsapi = "https://api.hotstar.com/h/v1/play?contentId="
 
         id = url[len(url) - 16: len(url) - 6]
+        #Hack to check if a valid id
+        try:
+            temp = int(id)
+        except ValueError:
+            id = url[len(url) - 10: len(url)]
+
         hotsapi += id
         headers = {'Hotstarauth': hot.generateAuth(), 'X-Country-Code':'IN', 'X-Platform-Code': 'JIO'}
 

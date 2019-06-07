@@ -4,7 +4,7 @@ import hmac
 
 def generateAuth():
     st = round(time.time())
-    exp = st + 6000
+    exp = st + 10000
     auth = "st=" + str(st) +"~exp=" + str(exp) + "~acl=/*"
     string = auth
 

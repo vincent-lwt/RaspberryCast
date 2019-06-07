@@ -3,6 +3,8 @@ import os
 import threading
 import logging
 import json
+import requests
+import hot
 logger = logging.getLogger("RaspberryCast")
 volume = 0
 
@@ -94,6 +96,20 @@ Extracting url in maximal quality.''')
                             i['format_note'] + '(' + fid + ').'
                         )
                         return i['url']
+
+    if "hots" in url:
+        hotsapi = "https://api.hotstar.com/h/v1/play?contentId="
+
+        id = url[len(url) - 17: len(url) - 8]
+        hotsapi += id
+        headers = {'Hotstarauth': hot.generateAuth(), 'X-Country-Code':'IN', 'X-Platform-Code': 'JIO'}
+
+        resp = requests.get(url, headers=headers)
+        jsonresp = json.loads(resp.text)
+        pburl = jsonresp['body']['results']['item']['playbackUrl']
+
+        return pburl
+
     elif "vimeo" in url:
         if slow_mode:
             for i in video['formats']:

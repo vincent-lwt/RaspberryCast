@@ -100,11 +100,11 @@ Extracting url in maximal quality.''')
     if "hots" in url:
         hotsapi = "https://api.hotstar.com/h/v1/play?contentId="
 
-        id = url[len(url) - 17: len(url) - 8]
+        id = url[len(url) - 16: len(url) - 6]
         hotsapi += id
         headers = {'Hotstarauth': hot.generateAuth(), 'X-Country-Code':'IN', 'X-Platform-Code': 'JIO'}
 
-        resp = requests.get(url, headers=headers)
+        resp = requests.get(hotsapi, headers=headers)
         jsonresp = json.loads(resp.text)
         pburl = jsonresp['body']['results']['item']['playbackUrl']
 

@@ -114,6 +114,9 @@ Extracting url in maximal quality.''')
         jsonresp = json.loads(resp.text)
         pburl = jsonresp['body']['results']['item']['playbackUrl']
 
+        #playback url with highest quality
+        pburl = pburl.replace("master.m3u8", "media-5/index.m3u8")
+
         return pburl
 
     elif "vimeo" in url:

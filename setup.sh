@@ -39,7 +39,7 @@ echo "Installing necessary dependencies... (This could take a while)"
 echo ""
 echo "============================================================"
 
-apt-get install -y lsof python-pip git wget omxplayer libnss-mdns fbi
+apt-get install -y lsof python-pip git wget omxplayer libnss-mdns fbi libglib2.0-dev libdbus-1-dev
 echo "============================================================"
 
 if [ "$?" = "1" ]
@@ -48,7 +48,7 @@ then
   exit 0
 fi
 
-pip install youtube-dl bottle livestreamer
+pip install youtube-dl bottle livestreamer omxplayer-wrapper
 
 if [ "$?" = "1" ]
 then

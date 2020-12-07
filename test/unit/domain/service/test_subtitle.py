@@ -2,13 +2,13 @@ from pathlib import Path
 from test.util import TestCase
 from unittest.mock import Mock
 
-from OpenCast.config import config
+from OpenCast.config import settings
 from OpenCast.domain.service.subtitle import SubtitleService
 
 
 class SubtitleServiceTest(TestCase):
     def setUp(self):
-        self.lang = config["subtitle.language"]
+        self.lang = settings["subtitle.language"]
 
         self.video = Mock()
         self.video.location = "/tmp/video.mp4"

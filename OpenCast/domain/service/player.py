@@ -1,6 +1,6 @@
 """ Player external operations """
 
-from typing import List
+from typing import List, Union
 
 import structlog
 
@@ -53,7 +53,9 @@ class QueueingService:
         playlist.ids.insert(insert_idx, video_id)
         return playlist.ids
 
-    def next_video(self, playlist_id: Id, video_id: Id) -> Id:
+    def next_video(
+        self, playlist_id: Id, video_id: Id, loop_last: Union[bool, str]
+    ) -> Id:
         playlist = self._playlist_repo.get(playlist_id)
         if video_id not in playlist.ids:
             self._logger.warning("unknown video", video=video_id, playlist=playlist)
@@ -63,9 +65,9 @@ class QueueingService:
         if video_idx + 1 < len(playlist.ids):
             return playlist.ids[video_idx + 1]
 
-        if settings["player.loop_last"] == "track":
+        if loop_last == "track":
             return playlist.ids[video_idx]
-        if settings["player.loop_last"] == "album":
+        if loop_last == "album":
             videos = self._video_repo.list(playlist.ids)
             while (
                 video_idx > 0
@@ -75,4 +77,5 @@ class QueueingService:
             ):
                 video_idx -= 1
             return playlist.ids[video_idx]
+        # else: loop_last is False
         return None
